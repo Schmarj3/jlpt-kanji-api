@@ -11,15 +11,23 @@ namespace JLPTKanji.Controllers
     public class JLPTKanjiController : ControllerBase
     {
         [HttpGet]
-        public JsonResult GetJlptKanji()
+        public IActionResult GetJlptKanji()
         {
-            return new JsonResult(TempKanjiDataStore.Current.KanjiLists);
+            return Ok(TempKanjiDataStore.Current.KanjiLists);
         }
 
         [HttpGet("{jlptlevel}")]
-        public JsonResult GetJlptKanjiByLevel(int jlptlevel)
+        public IActionResult GetJlptKanjiByLevel(int jlptlevel)
         {
-            return new JsonResult(TempKanjiDataStore.Current.KanjiLists.FirstOrDefault(kanji => kanji.JLPTLevel == jlptlevel));
+            // find kanji level object
+            var KanjiList = TempKanjiDataStore.Current.KanjiLists.FirstOrDefault(kanji => kanji.JLPTLevel == jlptlevel);
+
+            if (KanjiList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(KanjiList);
         }
     }
 }
